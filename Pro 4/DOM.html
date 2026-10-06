@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DOM Manipulation</title>
+</head>
+<body>
+
+<h2>Dynamic Web Page</h2>
+<input type="text" id="text" placeholder="Enter text">
+<button onclick="addText()">Add</button>
+<ul id="list"></ul>
+<script>
+function addText() {
+let input = document.getElementById("text");
+let li = document.createElement("li");
+li.innerHTML = input.value;
+li.onclick = function() {
+li.remove();
+};
+document.getElementById("list").appendChild(li);
+input.value = "";
+}
+</script>
+
+</body>
+</html

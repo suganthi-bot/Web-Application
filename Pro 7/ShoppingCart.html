@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>React Shopping Cart</title>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f5f9;
+        }
+
+        .container {
+            width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            text-align: left;
+        }
+
+        .product-info h3 {
+            margin: 0 0 5px;
+        }
+
+        .product-info p {
+            margin: 0;
+            color: #555;
+        }
+
+        button {
+            padding: 8px 14px;
+            margin: 3px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .remove {
+            background-color: #dc2626;
+        }
+
+        .remove:hover {
+            background-color: #b91c1c;
+        }
+
+        .cart-item {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #eff6ff;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .quantity {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .total {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: right;
+            color: #16a34a;
+            margin-top: 20px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+// Product List
+const products = [
+    {
+        id: 1,
+        name: "Laptop 💻",
+        price: 50000
+    },
+    {
+        id: 2,
+        name: "Headphones 🎧",
+        price: 2000
+    },
+    {
+        id: 3,
+        name: "Keyboard ⌨️",
+        price: 1500
+    },
+    {
+        id: 4,
+        name: "Mouse 🖱️",
+        price: 800
+    }
+];
+
+
+// Reducer Function
+function cartReducer(cart, action) {
+
+    switch (action.type) {
+
+        // Add product
+        case "ADD":
+            const existingItem =
+                cart.find(item => item.id === action.product.id);
+
+            if (existingItem) {
+
+                return cart.map(item =>
+                    item.id === action.product.id
+                        ? {
+                            ...item,
+                            quantity: item.quantity + 1
+                        }
+                        : item
+                );
+
+            }
+
+            return [
+                ...cart,
+                {
+                    ...action.product,
+                    quantity: 1
+                }
+            ];
+
+
+        // Increase quantity
+        case "INCREASE":
+
+            return cart.map(item =>
+                item.id === action.id
+                    ? {
+                        ...item,
+                        quantity: item.quantity + 1
+                    }
+                    : item
+            );
+
+
+        // Decrease quantity
+        case "DECREASE":
+
+            return cart
+                .map(item =>
+                    item.id === action.id
+                        ? {
+                            ...item,
+                            quantity: item.quantity - 1
+                        }
+                        : item
+                )
+                .filter(item => item.quantity > 0);
+
+
+        // Remove product
+        case "REMOVE":
+
+            return cart.filter(
+                item => item.id !== action.id
+            );
+
+
+        // Clear cart
+        case "CLEAR":
+
+            return [];
+
+
+        default:
+            return cart;
+    }
+}
+
+
+// Shopping Cart Component
+function ShoppingCart() {
+
+    // useReducer
+    const [cart, dispatch] =
+        React.useReducer(cartReducer, []);
+
+
+    // Calculate total
+    const total = cart.reduce(
+        (sum, item) =>
+            sum + item.price * item.quantity,
+        0
+    );
+
+
+    return (
+        <div className="container">
+
+            <h1>🛒 Shopping Cart</h1>
+
+            <h2>Products</h2>
+
+            {/* Display Products */}
+            {products.map(product => (
+
+                <div className="product" key={product.id}>
+
+                    <div className="product-info">
+
+                        <h3>
+                            {product.name}
+                        </h3>
+
+                        <p>
+                            ₹{product.price}
+                        </p>
+
+                    </div>
+
+                    <button
+                        onClick={() =>
+                            dispatch({
+                                type: "ADD",
+                                product: product
+                            })
+                        }
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            ))}
+
+
+            <hr />
+
+
+            <h2>Cart Items</h2>
+
+            {cart.length === 0 ? (
+
+                <div className="empty">
+                    Your cart is empty 🛒
+                </div>
+
+            ) : (
+
+                cart.map(item => (
+
+                    <div
+                        className="cart-item"
+                        key={item.id}
+                    >
+
+                        <h3>
+                            {item.name}
+                        </h3>
+
+                        <p>
+                            Price: ₹{item.price}
+                        </p>
+
+                        <p>
+                            Quantity:
+
+                            <button
+                                onClick={() =>
+                                    dispatch({
+                                        type: "DECREASE",
+                                        id: item.id
+                                    })
+                                }
+                            >
+                                −
+                            </button>
+
+                            <span className="quantity">
+                                {item.quantity}
+                            </span>
+
+                            <button
+                                onClick={() =>
+                                    dispatch({
+                                        type: "INCREASE",
+                                        id: item.id
+                                    })
+                                }
+                            >
+                                +
+                            </button>
+                        </p>
+
+                        <p>
+                            Subtotal:
+                            ₹{item.price * item.quantity}
+                        </p>
+
+                        <button
+                            className="remove"
+                            onClick={() =>
+                                dispatch({
+                                    type: "REMOVE",
+                                    id: item.id
+                                })
+                            }
+                        >
+                            Remove
+                        </button>
+
+                    </div>
+
+                ))
+
+            )}
+
+
+            {cart.length > 0 && (
+
+                <>
+
+                    <div className="total">
+                        Total: ₹{total}
+                    </div>
+
+                    <button
+                        onClick={() =>
+                            dispatch({ type: "CLEAR" })
+                        }
+                    >
+                        Clear Cart
+                    </button>
+
+                </>
+
+            )}
+
+        </div>
+    );
+}
+
+
+// App Component
+function App() {
+
+    return <ShoppingCart />;
+
+}
+
+
+// Render React Application
+const root = ReactDOM.createRoot(
+    document.getElementById("root")
+);
+
+root.render(<App />);
+
+</script>
+
+</body>
+</html>

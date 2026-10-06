@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>React Forms and Controlled Components</title>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f5f9;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .card {
+            background-color: white;
+            width: 400px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #2563eb;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eff6ff;
+            border-radius: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        function StudentForm() {
+
+            // State variables
+            const [name, setName] = React.useState("");
+            const [email, setEmail] = React.useState("");
+            const [department, setDepartment] = React.useState("");
+
+            // Form submit event
+            function handleSubmit(event) {
+
+                event.preventDefault();
+
+                alert("Registration Successful!");
+            }
+
+            return (
+                <div className="card">
+
+                    <h2>Student Registration</h2>
+
+                    <form onSubmit={handleSubmit}>
+
+                        {/* Name Input */}
+                        <input
+                            type="text"
+                            placeholder="Enter your name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+
+                        {/* Email Input */}
+                        <input
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+
+                        {/* Department */}
+                        <select
+                            value={department}
+                            onChange={(e) => setDepartment(e.target.value)}
+                        >
+                            <option value="">
+                                Select Department
+                            </option>
+
+                            <option value="Computer Science">
+                                Computer Science
+                            </option>
+
+                            <option value="Information Technology">
+                                Information Technology
+                            </option>
+
+                            <option value="Computer Applications">
+                                Computer Applications
+                            </option>
+                        </select>
+
+                        <br />
+
+                        <button type="submit">
+                            Register
+                        </button>
+
+                    </form>
+
+                    {/* Display Entered Data */}
+                    {name && (
+                        <div className="result">
+
+                            <h3>Student Details</h3>
+
+                            <p>
+                                <b>Name:</b> {name}
+                            </p>
+
+                            <p>
+                                <b>Email:</b> {email}
+                            </p>
+
+                            <p>
+                                <b>Department:</b> {department}
+                            </p>
+
+                        </div>
+                    )}
+
+                </div>
+            );
+        }
+
+        function App() {
+
+            return (
+                <div>
+
+                    <h1>
+                        React Forms and Input Handling
+                    </h1>
+
+                    <StudentForm />
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(
+            document.getElementById("root")
+        );
+
+        root.render(<App />);
+
+    </script>
+
+</body>
+</html>

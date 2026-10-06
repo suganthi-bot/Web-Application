@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Validation</title>
+</head>
+<body>
+
+<h2>Login Form</h2>
+
+<form onsubmit="return validate()">
+
+Email:
+<input type="text" id="email"><br><br>
+
+Password:
+<input type="password" id="password"><br><br>
+
+<button type="submit">Submit</button>
+
+</form>
+
+<p id="msg" style="color:red;"></p>
+
+<script>
+function validate() {
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
+
+let message = document.getElementById("msg");
+
+// Check empty fields
+if (email == "" || password == "") {
+message.innerHTML = "All fields are required";
+return false;
+}
+
+// Simple email check
+if (!email.includes("@")) {
+message.innerHTML = "Enter valid email";
+return false;
+}
+
+// Password length check
+if (password.length < 6) {
+message.innerHTML = "Password must be at least 6 characters";
+return false;
+}
+
+message.innerHTML = "Form submitted successfully!";
+return true;
+}
+</script>
+
+</body>
+</html>

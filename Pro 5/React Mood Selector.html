@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>React Mood Selector</title>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f5f9;
+}
+
+.app {
+    text-align: center;
+    padding: 50px;
+}
+
+h1 {
+    color: #7c3aed;
+}
+
+.card {
+    background: white;
+    width: 350px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.emoji {
+    font-size: 70px;
+    margin: 20px;
+}
+
+select {
+    padding: 12px;
+    width: 220px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #7c3aed;
+    color: white;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function MoodSelector() {
+
+    const [mood, setMood] = React.useState("happy");
+    const [show, setShow] = React.useState(false);
+
+    const moods = {
+        happy: {
+            emoji: "😊",
+            message: "Keep smiling! Have a wonderful day!",
+            color: "#fff3cd"
+        },
+
+        sad: {
+            emoji: "😔",
+            message: "It's okay to have a bad day. Better days are coming!",
+            color: "#dbeafe"
+        },
+
+        excited: {
+            emoji: "🤩",
+            message: "Awesome! Enjoy your excitement!",
+            color: "#fce7f3"
+        },
+
+        tired: {
+            emoji: "😴",
+            message: "Take some rest and recharge yourself!",
+            color: "#e0e7ff"
+        },
+
+        angry: {
+            emoji: "😡",
+            message: "Take a deep breath and relax!",
+            color: "#fee2e2"
+        }
+    };
+
+    function showMood() {
+        setShow(true);
+    }
+
+    return (
+        <div
+            className="card"
+            style={{
+                backgroundColor: show
+                    ? moods[mood].color
+                    : "white"
+            }}
+        >
+
+            <h2>How Are You Feeling?</h2>
+
+            <select
+                value={mood}
+                onChange={(e) => {
+                    setMood(e.target.value);
+                    setShow(false);
+                }}
+            >
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                <option value="excited">Excited</option>
+                <option value="tired">Tired</option>
+                <option value="angry">Angry</option>
+            </select>
+
+            <br />
+
+            <button onClick={showMood}>
+                Show My Mood
+            </button>
+
+            {show && (
+                <div>
+                    <div className="emoji">
+                        {moods[mood].emoji}
+                    </div>
+
+                    <h3>{moods[mood].message}</h3>
+                </div>
+            )}
+
+        </div>
+    );
+}
+
+function App() {
+
+    return (
+        <div className="app">
+
+            <h1>React Mood Selector</h1>
+
+            <p>
+                A Dynamic Mood Application using React
+            </p>
+
+            <MoodSelector />
+
+        </div>
+    );
+}
+
+const root = ReactDOM.createRoot(
+    document.getElementById("root")
+);
+
+root.render(<App />);
+
+</script>
+
+</body>
+</html>

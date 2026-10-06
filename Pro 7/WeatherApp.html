@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>React Weather App</title>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #dbeafe;
+        }
+
+        .container {
+            width: 400px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2563eb;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 6px;
+            background-color: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .weather {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #eff6ff;
+            border-radius: 10px;
+        }
+
+        .temperature {
+            font-size: 45px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .error {
+            color: red;
+            margin-top: 15px;
+        }
+
+        .loading {
+            color: #555;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function WeatherApp() {
+
+    const [city, setCity] = React.useState("");
+    const [weather, setWeather] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
+
+    async function getWeather() {
+
+        if (city.trim() === "") {
+            setError("Please enter a city name");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+        setWeather(null);
+
+        try {
+
+            /*
+             * Open-Meteo does not require an API key.
+             * First, find the city coordinates.
+             */
+            const locationResponse = await fetch(
+                `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`
+            );
+
+            const locationData = await locationResponse.json();
+
+            if (!locationData.results) {
+                throw new Error("City not found");
+            }
+
+            const location = locationData.results[0];
+
+            /*
+             * Get weather using latitude and longitude.
+             */
+            const weatherResponse = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
+            );
+
+            const weatherData = await weatherResponse.json();
+
+            setWeather({
+                city: location.name,
+                country: location.country,
+                temperature: weatherData.current.temperature_2m,
+                humidity: weatherData.current.relative_humidity_2m,
+                wind: weatherData.current.wind_speed_10m
+            });
+
+        } catch (err) {
+
+            setError("Unable to find weather information.");
+
+        } finally {
+
+            setLoading(false);
+
+        }
+    }
+
+
+    return (
+        <div className="container">
+
+            <h1>🌤️ Weather App</h1>
+
+            <input
+                type="text"
+                placeholder="Enter city name"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+            />
+
+            <br />
+
+            <button onClick={getWeather}>
+                Get Weather
+            </button>
+
+
+            {loading && (
+                <p className="loading">
+                    Loading weather...
+                </p>
+            )}
+
+
+            {error && (
+                <p className="error">
+                    {error}
+                </p>
+            )}
+
+
+            {weather && (
+
+                <div className="weather">
+
+                    <h2>
+                        {weather.city}, {weather.country}
+                    </h2>
+
+                    <p className="temperature">
+                        {weather.temperature}°C
+                    </p>
+
+                    <p>
+                        💧 Humidity:
+                        {weather.humidity}%
+                    </p>
+
+                    <p>
+                        💨 Wind Speed:
+                        {weather.wind} km/h
+                    </p>
+
+                </div>
+
+            )}
+
+        </div>
+    );
+}
+
+
+function App() {
+    return <WeatherApp />;
+}
+
+
+const root = ReactDOM.createRoot(
+    document.getElementById("root")
+);
+
+root.render(<App />);
+
+</script>
+
+</body>
+</html>

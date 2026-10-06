@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>React Expense Tracker</title>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f5f9;
+}
+
+.app {
+    text-align: center;
+    padding: 40px;
+}
+
+h1 {
+    color: #16a34a;
+}
+
+.card {
+    background: white;
+    width: 400px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    margin: 8px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #16a34a;
+    color: white;
+    cursor: pointer;
+}
+
+.total {
+    background: #dcfce7;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.expense {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+}
+
+.delete {
+    background: #dc2626;
+    padding: 6px 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function ExpenseTracker() {
+
+    const [name, setName] = React.useState("");
+    const [amount, setAmount] = React.useState("");
+    const [expenses, setExpenses] = React.useState([]);
+
+    function addExpense() {
+
+        if (name !== "" && amount !== "") {
+
+            const newExpense = {
+                name: name,
+                amount: Number(amount)
+            };
+
+            setExpenses([...expenses, newExpense]);
+
+            setName("");
+            setAmount("");
+        }
+    }
+
+    function deleteExpense(index) {
+
+        const updatedExpenses = expenses.filter(
+            (_, i) => i !== index
+        );
+
+        setExpenses(updatedExpenses);
+    }
+
+    const total = expenses.reduce(
+        (sum, expense) => sum + expense.amount,
+        0
+    );
+
+    return (
+        <div className="card">
+
+            <h2>Expense Tracker</h2>
+
+            <input
+                type="text"
+                placeholder="Expense name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            />
+
+            <input
+                type="number"
+                placeholder="Amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+            />
+
+            <button onClick={addExpense}>
+                Add Expense
+            </button>
+
+            <div className="total">
+                <h3>Total Expense</h3>
+                <h2>₹{total}</h2>
+            </div>
+
+            <h3>Expense List</h3>
+
+            {expenses.map((expense, index) => (
+
+                <div className="expense" key={index}>
+
+                    <span>
+                        {expense.name} - ₹{expense.amount}
+                    </span>
+
+                    <button
+                        className="delete"
+                        onClick={() => deleteExpense(index)}
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            ))}
+
+        </div>
+    );
+}
+
+function App() {
+
+    return (
+        <div className="app">
+
+            <h1>React Expense Tracker</h1>
+
+            <p>
+                Track your daily expenses using React
+            </p>
+
+            <ExpenseTracker />
+
+        </div>
+    );
+}
+
+const root = ReactDOM.createRoot(
+    document.getElementById("root")
+);
+
+root.render(<App />);
+
+</script>
+
+</body>
+</html>

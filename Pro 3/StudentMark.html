@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Mark Calculator</title>
+</head>
+
+<body>
+
+<h2>Student Mark Calculator</h2>
+
+<form onsubmit="return calculate()">
+
+Name:
+<input type="text" id="name"><br><br>
+
+Tamil:
+<input type="number" id="tamil"><br><br>
+
+English:
+<input type="number" id="english"><br><br>
+
+Maths:
+<input type="number" id="maths"><br><br>
+
+Science:
+<input type="number" id="science"><br><br>
+
+Computer:
+<input type="number" id="computer"><br><br>
+
+<button type="submit">Calculate Result</button>
+
+</form>
+
+<p id="result"></p>
+
+<script>
+
+function calculate() {
+
+    let name = document.getElementById("name").value;
+    let tamil = Number(document.getElementById("tamil").value);
+    let english = Number(document.getElementById("english").value);
+    let maths = Number(document.getElementById("maths").value);
+    let science = Number(document.getElementById("science").value);
+    let computer = Number(document.getElementById("computer").value);
+
+    let result = document.getElementById("result");
+
+    // Check name
+    if (name == "") {
+        result.innerHTML = "Please enter student name";
+        return false;
+    }
+
+    // Check marks
+    if (tamil < 0 || tamil > 100 ||
+        english < 0 || english > 100 ||
+        maths < 0 || maths > 100 ||
+        science < 0 || science > 100 ||
+        computer < 0 || computer > 100) {
+
+        result.innerHTML = "Marks must be between 0 and 100";
+        return false;
+    }
+
+    let total = tamil + english + maths + science + computer;
+    let average = total / 5;
+
+    let grade;
+
+    if (average >= 90) {
+        grade = "A+";
+    }
+    else if (average >= 80) {
+        grade = "A";
+    }
+    else if (average >= 70) {
+        grade = "B";
+    }
+    else if (average >= 60) {
+        grade = "C";
+    }
+    else if (average >= 50) {
+        grade = "D";
+    }
+    else {
+        grade = "F";
+    }
+
+    result.style.color = "green";
+
+    result.innerHTML =
+        "Student Name: " + name + "<br>" +
+        "Total Marks: " + total + "<br>" +
+        "Average: " + average.toFixed(2) + "<br>" +
+        "Grade: " + grade;
+
+    return false;
+}
+
+</script>
+
+</body>
+</html>
